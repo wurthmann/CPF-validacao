@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>VALIDA CPF</title>
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<input type="text" id="cpf">
+		<p id="msg_erro" style="font-size: 12px; color: #f00;"></p>
+
+		<input type="submit" onclick="return valida_CPF()" value="Enviar">
+	</body>
+	<script>
+		function valida_CPF(){
+			//Váriável armazena o valor digitado no campo CPF
+			var cpf = document.getElementById("cpf").value;
+
+			
+
+			//Se não for passado nenhum valor exibe um erro no parágrafo abaixo do campo e altera o foco para o campo e seu estilo
+			if (cpf == ""){
+				document.getElementById("msg_erro").innerHTML = "Você esqueceu de informar o CPF";
+				document.getElementById("cpf").style.border = "1px solid #f00";
+				document.getElementById("cpf").focus();
+				return false;
+			}
+
+			//Converte o valor digitado no campo em string
+			cpf = cpf.toString();
+
+			//Remove os pontos e outros caracteres
+
+			cpf = cpf.replace(/[^0-9]/g, '');
+
+			//Verifica se o CPF contém 11 digitos se não houver, não valida e informa um erro no parágrafo abaixo do campo.
+
+			if (cpf.length === 11){
+
+				
+
+				if(cpf == "11111111111" || cpf == "22222222222" || cpf == "33333333333" || cpf == "44444444444" || cpf == "55555555555" || cpf == "66666666666" || cpf == "77777777777" || cpf == "88888888888" || cpf == "99999999999"){
+					document.getElementById("msg_erro").innerHTML = "CPF inválido";
+					document.getElementById("cpf").style.border = "1px solid #f00";
+					document.getElementById("cpf").focus();
+					return false;
+				}
+				//Cria um vetor que armazena cada digito do CPF
+
+				var digito = cpf.split("");
+
+				//CPF's inválidos conhecidos 
+				//Váriável de posições
+
+				var posicao = 10;
+
+				//Variável que armazena a soma dos digitos
+
+				var soma_digito = 0;
+
+				/*
+				O laço vai percorrer as posições multiplicando cada digito do CPF com sua respectiva posição e armazendando  o resultado na variável soma_digito
+
+				Exemplo: CPF 407.733.238-XX
+				Posição = 10	9	8	7	6	5	4	3	2
+				Digito = 	4	0	7	7	3	3	2	3	8
+				Resultado=	40	0	56	49	18	15	8	9	16
+
+				soma_digito = 40 + 0 + 56 + 49 + 18 + 15 + 8 + 9 + 16 = 211
+				primeiro digito validador = (211*10)%11 = 9
+				*/
+
+				for (var i = 0; i < 9; i++){
+					soma_digito = soma_digito + (digito[i] * posicao);
+					posicao--;
+				}
+
+				//Multiplica o soma_digito por 10 e descobre o resto da divisão do valor por 11
+
+				primeiro_digito = (soma_digito * 10) % 11;
+
+
+				//Se o primeiro digito validador for 10 ou 11 o primeiro digito é 0
+				if (primeiro_digito == 10 || primeiro_digito == 11){
+
+					primeiro_digito = 0;
+				}
+
+				//Verificação do segundo digito validador
+
+				soma_digito = 0;
+
+				//Agora o primeiro digito validador entra na contagem então iremos percorrer 11 posições
+
+				posicao = 11;
+
+				/*
+				O laço vai percorrer as posições multiplicando cada digito do CPF incluindo agora o primeiro digito validador com sua respectiva posição e armazendando  o resultado na variável soma_digito
+
+				Exemplo: CPF 407.733.238-XX
+				Posição = 11	10	9	8	7	6	5	4	3	2
+				Digito = 	4	0	7	7	3	3	2	3	8	9
+				Resultado=	40	0	56	49	18	15	8	9	16	18
+
+				soma_digito = 40 + 0 + 56 + 49 + 18 + 15 + 8 + 9 + 16 + 18 = 229
+				segundo digito validador = (229*10)%11 = 9
+				*/
+
+				for (i = 0; i < 10; i++){
+					soma_digito = soma_digito + (digito[i] * posicao);
+					posicao--;
+				}
+
+				segundo_digito = (soma_digito * 10) % 11;
+
+				//Se o segundo digito validador for 10 ou 11 o mesmo será igual a zero
+
+				if (segundo_digito == 10 || segundo_digito == 11){
+					segundo_digito = 0;
+				}
+
+				//Se os dois digitos validadores forem os mesmos digitados pelo usuário então o CPF é válido
+				//Nesse exemplo o return false é apenas para parar execução da função, normalmente dentro deste IF deixamos apenas um comentário ou vazio
+
+				
+
+				if(primeiro_digito == digito[9] && segundo_digito == digito[10]){
+					document.getElementById("msg_erro").innerHTML = "CPF válido";
+					document.getElementById("msg_erro").style.color = "#00f";
+					document.getElementById("cpf").style.border = "1px solid #00f";
+					document.getElementById("cpf").focus();
+					return false;
+					
+				}//Se os digitos forem diferentes exibe mensagem de erro
+				else{
+					document.getElementById("msg_erro").innerHTML = "CPF inválido";
+					document.getElementById("cpf").style.border = "1px solid #f00";
+					document.getElementById("cpf").focus();
+					return false;
+
+				}
+
+
+
+
+			}else{
+				document.getElementById("msg_erro").innerHTML = "CPF inválido";
+				document.getElementById("cpf").style.border = "1px solid #f00";
+				document.getElementById("cpf").focus();
+				return false;
+			}
+
+			
+
+		}
+	</script>
+</html>
